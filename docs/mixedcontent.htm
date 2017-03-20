@@ -6,6 +6,8 @@
 
     <h3>to test behavior of Firefox's <i>security.mixed_content.use_hsts</i> + <i>security.mixed_content.send_hsts_priming</i></h3>
 
+    <p><b>Note: this test requires <tt>security.mixed_content.block_display_content = true</tt>.</b></p>
+	
     <p>** from a domain with HTTP+HTTPS support but without HSTS (cdn.ghacks.net)<br>
 	==> this should never load, regardless of <b>use_hsts</b> + <b>send_hsts_priming</b><br><br>
     <img src="http://cdn.ghacks.net/wp-content/uploads/2005/10/ghacks-technology-news.jpg" alt="Image via HTTP has not loaded" title="Image via HTTP has loaded!" />
