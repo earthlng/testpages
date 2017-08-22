@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Screen Information</title>
+<style>
+/* from reset.css */
+html{color:#000;background:#FFF;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
+li{list-style:none;}
+caption,th{text-align:left;}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+
+/* from default.css */
+body {
+background:#2f2f2f;
+font-family:arial, helvetica, sans-serif;
+font-size:10pt;
+color:#000;
+}
+
+#content {
+margin:0 auto;
+background:#fff;
+clear: both;
+}
+
+#content #right {
+width: 57%;
+}
+
+#content #right .inner {
+line-height:20px;
+margin:0 auto;
+padding:20px;
+}
+#content #right .code {
+font-family: Courier New, Courier, Fixed, monospace;
+border: 1px solid #000;
+font-size: 80%;
+padding: 6px;
+}
+
+#content #right .inner strong {
+font-weight:600;
+}
+
+#content #right p {
+margin: 6px 0;
+}
+
+#content #right h1 {
+font-size:200%;
+color:#0059B2;
+padding:0 0 10px;
+font-weight:600;
+}
+
+#content #right .small {font-size: 80%}
+
+table.bspy, table.bspy td{font:100% Arial, Helvetica, sans-serif;}
+table.bspy{width:100%;border-collapse:collapse;margin:1em 0;border:1px solid #000}
+table.bspy th, table.bspy td{text-align:left;padding:.5em;border:1px solid #fff}
+table.bspy th{background:#003569;color:#fff;font-weight:bold}
+table.bspy td{background:#e5f1f4;}
+table.bspy td.property {vertical-align: top}
+table.bspy tr.even td{background:#e5f1f4;}
+table.bspy tr.odd td{background:#f8fbfc;}
+
+.clr {clear:both; overflow:hidden}
+
+</style>
+</head>
+<body id="browserspydk">
+<div id="content">
+<div id="right">
+<div class="inner">
+<h1>Screen Information</h1>
+<table class="bspy">
+<thead><tr><th>Test</th><th>Result</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+	let cnt = 0;
+	let scrn = ['width','height','availHeight','availWidth'];
+	let wnd = ['outerWidth','outerHeight','innerHeight','innerWidth','screenX','screenY', 'mozInnerScreenX', 'mozInnerScreenY'];
+	
+	function crtTbl(obj,props) {
+		var tb = document.getElementsByTagName('tbody')[0];
+		var objct = (obj === 'screen') ? screen : window;
+		var html, tblrow, odd;
+		for (let i=0, len=props.length; i<len; i++) {
+			tblrow = document.createElement('tr');
+			tblrow.className = (cnt%2) ? 'odd' : 'even';
+			tblrow.innerHTML = '<td class="property">'+obj+'.'+props[i]+'</td><td id="id'+cnt+'" class="value">'+objct[props[i]]+'</td>';
+			tb.appendChild(tblrow);
+			cnt++;
+		}
+	}
+	crtTbl('screen',scrn);
+	crtTbl('window',wnd);
+	
+</script>
+
+</body>
+</html>
