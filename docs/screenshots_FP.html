@@ -1,0 +1,18 @@
+<h1>Mozilla Screenshots testpage</h1>
+<h3>Mozilla Screenshots is awesome! Test it here and take a screenshot, you'll love it!</h3>
+<img id="i" src="http://www.motifake.com/image/demotivational-poster/0904/being-cute-kitten-gun-cute-pistol-cat-demotivational-poster-1240885692.jpg">
+<p><h3><div id="thx" style="color:red"></div></h3></p>
+<script>
+var intervalID = window.setInterval(myCallback, 500);
+function myCallback() {
+  let a = document.getElementById('firefox-screenshots-preselection-iframe');
+  if (a) {
+  	clearInterval(intervalID);
+  	let aa = a.src.replace('moz-extension://','').replace('/blank.html','');
+  	let b = document.getElementById('thx');
+  	b.innerText = "It's great, isn't it?! Oh and thanks btw, we now have your unique and permanent Screenshots random-UUID: " + aa;
+  	let c = document.getElementById('i');
+  	c.src = "http://www.motifake.com/image/demotivational-poster/0904/facepalm-lion-facepalm-demotivational-poster-1240941693.jpg";
+  }
+}
+</script>
