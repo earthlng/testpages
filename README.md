@@ -1,4 +1,4 @@
 ## testpages
 
-* test Firefox's **security.mixed_content.use_hsts** + **security.mixed_content.send_hsts_priming**
-  * https://earthlng.github.io/testpages/mixedcontent.htm
+* Browser History stealing (= copy of original PoC @ http://lcamtuf.coredump.cx/yahh/ but with updated URLs)
+  * https://earthlng.github.io/testpages/visited_links.html
